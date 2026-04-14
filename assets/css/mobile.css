@@ -1,0 +1,9 @@
+@media (max-width: 768px){
+  .header-inner,.main-nav,.filter-row,.actions-between,.button-row{flex-direction:column;align-items:stretch}
+  .btn{width:100%}
+  .table-wrap table{min-width:560px}
+  .site-title{text-align:center}
+  .main-nav a{text-align:center}
+  .actions-tight strong{margin-bottom:.5rem}
+  .student-row{padding:.8rem}
+}

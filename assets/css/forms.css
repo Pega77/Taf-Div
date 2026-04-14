@@ -1,0 +1,16 @@
+.form-grid{display:grid;gap:1rem}
+.form-grid label{display:grid;gap:.35rem}
+.form-grid input,.form-grid select,.form-grid textarea{width:100%;padding:.8rem;border:1px solid #cbd5e1;border-radius:.8rem;background:#fff}
+.checkbox-row{display:flex!important;align-items:center;gap:.6rem}
+.checkbox-row input{width:auto}
+.inline-checkbox{display:flex}
+.btn{display:inline-flex;justify-content:center;align-items:center;padding:.75rem 1rem;border:none;border-radius:.8rem;background:#e2e8f0;color:#111827;cursor:pointer}
+.btn.primary{background:#2563eb;color:#fff}
+.auth-box{max-width:460px;margin:2rem auto}
+.filter-row{display:flex;gap:1rem;align-items:end;flex-wrap:wrap}
+.student-picker{display:grid;gap:.75rem}
+.compact-form{margin-bottom:1rem}
+.link-button{background:none;border:none;padding:0;color:#1d4ed8;cursor:pointer;font:inherit}
+.link-button:hover{text-decoration:underline}
+.search-form label{min-width:220px;flex:1}
+.student-row{padding:.6rem .4rem;border-radius:.8rem;background:#f8fafc}
