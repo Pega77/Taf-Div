@@ -1,30 +1,38 @@
-<?php
-require_once __DIR__ . '/../includes/auth.php';
-$error = null;
-if (isPost()) {
-    verifyCsrf();
-    if (loginUser(trim((string)post('username')), (string)post('password'))) {
-        redirect('dashboard.php');
+<form>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" placeholder="Enter your username" aria-label="Username" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" placeholder="Enter your password" aria-label="Password" required>
+
+    <button type="submit">Login</button>
+</form>
+
+<div class="demo-credentials">
+    <h3>Demo Credentials</h3>
+    <p><strong>Username:</strong> demoUser</p>
+    <p><strong>Password:</strong> demoPass</p>
+</div>
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        max-width: 300px;
+        margin: auto;
     }
-    $error = 'שם המשתמש או הסיסמה שגויים.';
-}
-include __DIR__ . '/../includes/header.php';
-?>
-<section class="auth-box">
-    <h2>כניסה למערכת</h2>
-    <?php if ($error): ?><div class="alert error"><?= e($error) ?></div><?php endif; ?>
-    <form method="post" class="card form-grid">
-        <?= csrfField() ?>
-        <label>
-            <span>שם משתמש</span>
-            <input type="text" name="username" required autocomplete="username">
-        </label>
-        <label>
-            <span>סיסמה</span>
-            <input type="password" name="password" required autocomplete="current-password">
-        </label>
-        <button type="submit" class="btn primary">כניסה</button>
-    </form>
-    <p class="muted">משתמש בדיקה: admin / 123456</p>
-</section>
-<?php include __DIR__ . '/../includes/footer.php'; ?>
+
+    input {
+        margin: 0.5em 0;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .demo-credentials {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+    }
+</style>
