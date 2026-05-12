@@ -1,38 +1,32 @@
-<form>
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" placeholder="Enter your username" aria-label="Username" required>
-
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" placeholder="Enter your password" aria-label="Password" required>
-
-    <button type="submit">Login</button>
-</form>
-
-<div class="demo-credentials">
-    <h3>Demo Credentials</h3>
-    <p><strong>Username:</strong> demoUser</p>
-    <p><strong>Password:</strong> demoPass</p>
-</div>
-<style>
-    form {
-        display: flex;
-        flex-direction: column;
-        max-width: 300px;
-        margin: auto;
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>כניסה</title>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <main class="container">
+    <form class="card" onsubmit="login(event)">
+      <h2>כניסה למערכת</h2>
+      <input id="username" placeholder="שם משתמש" required>
+      <input id="password" type="password" placeholder="סיסמה" required>
+      <button>כניסה</button>
+      <p id="error" class="error"></p>
+    </form>
+  </main>
+  <script>
+    async function login(e) {
+      e.preventDefault();
+      const res = await fetch('/api/auth.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({username: username.value, password: password.value})
+      });
+      if (!res.ok) { error.textContent = 'שם משתמש או סיסמה שגויים'; return; }
+      location.href = '/dashboard.php';
     }
-
-    input {
-        margin: 0.5em 0;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-
-    .demo-credentials {
-        margin-top: 20px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        background-color: #f9f9f9;
-    }
-</style>
+  </script>
+</body>
+</html>

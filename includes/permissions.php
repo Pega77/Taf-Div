@@ -1,65 +1,34 @@
 <?php
-require_once __DIR__ . '/auth.php';
+function can_access_group(PDO $pdo, int $groupId): bool {
+  $user = current_user();
+  if (!$user) return false;
+  if ($user['role'] === 'admin') return true;
 
-function isAdmin(): bool
-{
-    return user() && user()['role'] === 'admin';
+  if ($user['role'] === 'instructor') {
+    $stmt = $pdo->prepare("SELECT 1 FROM groups WHERE id = ? AND instructor_user_id = ? AND status = 'active' LIMIT 1");
+    $stmt->execute([$groupId, $user['id']]);
+    return (bool)$stmt->fetchColumn();
+  }
+
+  if ($user['role'] === 'coordinator') {
+    $stmt = $pdo->prepare("SELECT 1 FROM coordinator_groups WHERE group_id = ? AND coordinator_user_id = ? LIMIT 1");
+    $stmt->execute([$groupId, $user['id']]);
+    return (bool)$stmt->fetchColumn();
+  }
+
+  return false;
 }
 
-function isCoordinator(): bool
-{
-    return user() && user()['role'] === 'coordinator';
+function accessible_groups_sql(): string {
+  $user = current_user();
+  if (!$user || $user['role'] === 'admin') return "1=1";
+  if ($user['role'] === 'instructor') return "g.instructor_user_id = :current_user_id";
+  return "g.id IN (SELECT group_id FROM coordinator_groups WHERE coordinator_user_id = :current_user_id)";
 }
 
-function isInstructor(): bool
-{
-    return user() && user()['role'] === 'instructor';
-}
-
-function denyIfUnauthorized(bool $allowed): void
-{
-    if (!$allowed) {
-        redirect('unauthorized.php');
-    }
-}
-
-function canAccessGroup(int $groupId): bool
-{
-    if ($groupId <= 0) {
-        return false;
-    }
-
-    if (isAdmin() || isCoordinator()) {
-        return true;
-    }
-
-    $stmt = getDB()->prepare('SELECT COUNT(*) FROM groups WHERE id = :id AND instructor_user_id = :user_id AND deleted_at IS NULL');
-    $stmt->execute([
-        'id' => $groupId,
-        'user_id' => user()['id'],
-    ]);
-
-    return (int)$stmt->fetchColumn() > 0;
-}
-
-function canAccessStudent(int $studentId): bool
-{
-    if (isAdmin() || isCoordinator()) {
-        return true;
-    }
-
-    $stmt = getDB()->prepare('SELECT COUNT(*) FROM group_student gs JOIN groups g ON g.id = gs.group_id JOIN students s ON s.id = gs.student_id WHERE gs.student_id = :sid AND gs.is_active = 1 AND g.instructor_user_id = :uid AND g.deleted_at IS NULL');
-    $stmt->execute(['sid' => $studentId, 'uid' => user()['id']]);
-    return (int)$stmt->fetchColumn() > 0;
-}
-
-function canAccessActivity(int $activityId): bool
-{
-    if (isAdmin() || isCoordinator()) {
-        return true;
-    }
-
-    $stmt = getDB()->prepare('SELECT COUNT(*) FROM activities a JOIN groups g ON g.id = a.group_id WHERE a.id = :id AND g.instructor_user_id = :uid AND a.deleted_at IS NULL AND g.deleted_at IS NULL');
-    $stmt->execute(['id' => $activityId, 'uid' => user()['id']]);
-    return (int)$stmt->fetchColumn() > 0;
+function bind_current_user_if_needed(PDOStatement $stmt): void {
+  $user = current_user();
+  if ($user && $user['role'] !== 'admin') {
+    $stmt->bindValue(':current_user_id', (int)$user['id'], PDO::PARAM_INT);
+  }
 }
