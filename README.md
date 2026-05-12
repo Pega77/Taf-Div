@@ -1,32 +1,36 @@
-# מערכת MVP לניהול תוכניות, קבוצות, תלמידים ופעילויות — גרסה 4
+# Taf-Div PHP Attendance MVP
 
-גרסה זו כוללת:
-- ממשק עברי RTL בלבד
-- התחברות והרשאות
-- ניהול תוכניות, קבוצות, תלמידים, מטה־דטה ופעילויות
-- מחיקות רכות ושחזור למשתמשים, תלמידים ופעילויות
-- Pagination במסכי משתמשים, תלמידים ופעילויות
-- חיפוש AJAX מהיר בתלמידים ובפעילויות
+מותאם למבנה הטבלאי הקיים ב־`database/schema.sql` ו־`database/seed.sql` של הריפו Taf-Div.
 
 ## התקנה
-1. צרו בסיס נתונים חדש ב־MySQL.
-2. הריצו את `database/schema.sql`.
-3. הריצו את `database/seed.sql`.
-4. עדכנו את פרטי ההתחברות ב־`config/config.php`.
-5. מקמו את הפרויקט תחת Apache עם PHP 8 ומעלה.
-6. פתחו את `public/login.php`.
 
-## פרטי התחברות לדוגמה
-- משתמש: `admin`
-- סיסמה: `123456`
+1. הרץ את הקבצים הקיימים מהריפו:
+   - `database/schema.sql`
+   - `database/seed.sql`
+2. הרץ בנוסף:
+   - `sql/taf_div_extensions.sql`
+3. עדכן פרטי DB ב־`includes/db.php` אם צריך.
+4. הפעל שרת PHP מתוך תיקיית `public`:
 
-## מה חדש בגרסה 4
-- מחיקות רכות בטבלאות מרכזיות דרך `deleted_at`
-- שחזור לרשומות שנמחקו
-- בחירה של 10/20/50 רשומות לעמוד
-- חיפוש מיידי בתלמידים ובפעילויות ללא רענון מלא
+```bash
+php -S localhost:8000 -t public
+```
 
-## הערות
-- כל הממשק בעברית וב־RTL בלבד.
-- הקוד בנוי ב־PHP טהור עם PDO.
-- JavaScript משמש רק לשיפור חוויית השימוש.
+## התאמות שבוצעו
+
+- `projects` הותאם ל־`programs`.
+- `students` משתמש ב־`id` פנימי וב־`national_id` כת.ז.
+- `student_groups` הותאם ל־`group_student`.
+- `attendance` הותאם ל־`activity_students`.
+- `attendance.status` הותאם ל־`activity_students.participation_status`.
+- `created_by` הותאם ל־`created_by_user_id`.
+- metadata נשמר בטבלאות `metadata_fields` ו־`metadata_values`, לא JSON מרכזי.
+- נוספו הרחבות מינימליות ללוח פעילות: שעות, פעילות אישית לתלמיד, שיוך רכז לקבוצות, וסוגי פעילות לפי תוכנית.
+
+## הערה על רכזים
+
+ב־schema המקורי אין טבלה לשיוך רכז לקבוצות. לכן נוסף `coordinator_groups` בקובץ ההרחבות.
+
+## הערה על סוגי פעילות לפי תוכנית
+
+ב־schema המקורי `activity_types` היא טבלה גלובלית. לכן נוסף `activity_type_program` כדי לאפשר סוגי פעילות לפי תוכנית בלי לשבור את הנתונים הקיימים.
