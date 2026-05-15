@@ -1,7 +1,7 @@
 <?php
 $pdo = new PDO(
-  "mysql:host=localhost;dbname=student_mvp;charset=utf8mb4",
-  "root",
+  "mysql:host=localhost;dbname=netafnit;charset=utf8mb4",
+  "nettafnitadmin",
   "",
   [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
